@@ -14,9 +14,12 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/orders/my-orders`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/orders/my-orders`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const data = await res.json();
         setOrders(data || []);
       } catch (err) {
@@ -32,19 +35,21 @@ const Orders = () => {
   const getStatusClasses = (status) => {
     switch (status) {
       case "DELIVERED":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-green-700";
       case "SHIPPED":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-100 text-blue-700";
       case "CANCELLED":
-        return "bg-red-100 text-red-800";
-      default: // PENDING / CONFIRMED
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-yellow-100 text-yellow-700";
     }
   };
 
-  // Skeleton loader
   const SkeletonCard = () => (
-    <div className="bg-white border rounded-xl shadow animate-pulse p-4 flex flex-col gap-4">
+    <div
+      className="border rounded-2xl shadow-sm animate-pulse p-5 flex flex-col gap-4"
+      style={{ backgroundColor: "var(--card-bg)", borderColor: "#e5e7eb" }}
+    >
       <div className="flex justify-between items-start">
         <div className="space-y-2">
           <div className="h-4 w-24 bg-gray-300 rounded"></div>
@@ -63,58 +68,114 @@ const Orders = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-6xl mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">My Orders</h1>
 
-        {loading ? (
-          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
-          </div>
-        ) : orders.length === 0 ? (
-          <p className="text-center text-gray-500 mt-10">No orders placed yet.</p>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
-            {orders.map((order) => (
-              <div
-                key={order.id}
-                className="bg-white border rounded-xl shadow hover:shadow-lg transition p-4 flex flex-col justify-between"
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="font-semibold text-gray-700">
-                      Order ID: <span className="font-mono">{order.id}</span>
+      <div
+        className="min-h-screen py-8 px-4"
+        style={{ backgroundColor: "var(--bg-main)" }}
+      >
+        <div className="max-w-6xl mx-auto">
+          <h1
+            className="text-3xl font-bold mb-8"
+            style={{ color: "var(--text-main)" }}
+          >
+            My Orders
+          </h1>
+
+          {loading ? (
+            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          ) : orders.length === 0 ? (
+            <p
+              className="text-center mt-10"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              No orders placed yet.
+            </p>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
+              {orders.map((order) => (
+                <div
+                  key={order.id}
+                  className="border rounded-2xl shadow-sm hover:shadow-md transition p-5 flex flex-col justify-between"
+                  style={{
+                    backgroundColor: "var(--card-bg)",
+                    borderColor: "#e5e7eb",
+                  }}
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <p
+                        className="font-semibold"
+                        style={{ color: "var(--text-main)" }}
+                      >
+                        Order ID:
+                        <span className="font-mono ml-2">
+                          {order.id}
+                        </span>
+                      </p>
+                      <p
+                        className="text-xs mt-1"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
+                        Placed on:{" "}
+                        {dayjs(order.createdAt).format(
+                          "DD MMM YYYY, hh:mm A"
+                        )}
+                      </p>
+                    </div>
+
+                    <span
+                      className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusClasses(
+                        order.status
+                      )}`}
+                    >
+                      {order.status}
+                    </span>
+                  </div>
+
+                  <div
+                    className="flex justify-between items-center mt-3 border-t pt-3"
+                    style={{ borderColor: "#e5e7eb" }}
+                  >
+                    <p
+                      className="font-semibold"
+                      style={{ color: "var(--text-main)" }}
+                    >
+                      Total
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Placed on: {dayjs(order.createdAt).format("DD MMM YYYY, hh:mm A")}
+                    <p
+                      className="font-bold text-lg"
+                      style={{ color: "var(--primary)" }}
+                    >
+                      ₹{order.totalAmount}
                     </p>
                   </div>
 
-                  <span
-                    className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusClasses(
-                      order.status
-                    )}`}
+                  <button
+                    className="w-full mt-5 py-2 text-white font-medium rounded-xl transition active:scale-[0.98]"
+                    style={{
+                      backgroundColor: "var(--primary)",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.target.style.backgroundColor =
+                        "var(--primary-hover)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.target.style.backgroundColor =
+                        "var(--primary)")
+                    }
+                    onClick={() => navigate(`/orders/${order.id}`)}
                   >
-                    {order.status}
-                  </span>
+                    View Details
+                  </button>
                 </div>
-
-                <div className="flex justify-between items-center mt-2 border-t pt-2">
-                  <p className="font-semibold text-gray-700">Total</p>
-                  <p className="font-bold text-lg">₹{order.totalAmount}</p>
-                </div>
-
-                <button
-                  className="w-full mt-4 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-900 transition"
-                  onClick={() => navigate(`/orders/${order.id}`)}
-                >
-                  View Details
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
