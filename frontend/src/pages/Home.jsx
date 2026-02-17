@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
 import Carousel from "../components/Carousel";
-import axios from "axios";
+import api from "../services/axios";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -24,8 +24,8 @@ const Home = () => {
 
   // Fetch products
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/products")
+    api
+      .get("/products")
       .then((res) => setProducts(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
