@@ -1,6 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import api from "../services/axios.js";
 import Navbar from "../components/Navbar";
 import { useCart } from "../hooks/useCart";
 
@@ -33,8 +33,8 @@ const SearchResults = () => {
       setLoading(true);
 
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/products/search`,
+        const res = await api.get(
+          `/products/search`,
           { params: { query, page, limit: LIMIT } }
         );
 

@@ -1,24 +1,23 @@
 import Navbar from "../components/Navbar";
 import { useCart } from "../hooks/useCart";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+//import { useAuth } from "../hooks/useAuth";
 import { useState, useEffect } from "react";
+import api from "../services/axios"
 
 const Cart = () => {
   const { cartItems, updateQty, totalPrice, totalItems, setCartItems } = useCart();
   const navigate = useNavigate();
-  const { token } = useAuth();
+ // const { token } = useAuth();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(false); // you can replace this with actual fetch if needed
+    setLoading(false); 
   }, []);
 
   const removeItem = async (cartItemId) => {
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/cart/remove/${cartItemId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+      await api.delete(`/cart/remove/${cartItemId}`, {
       });
       setCartItems((prev) => prev.filter((item) => item.id !== cartItemId));
     } catch (err) {

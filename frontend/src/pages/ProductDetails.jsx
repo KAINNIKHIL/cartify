@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/axios.js";
 import Navbar from "../components/Navbar";
 import ImageGallery from "../components/ImageGallery";
 import { useCart } from "../hooks/useCart";
@@ -20,8 +20,8 @@ const ProductDetails = () => {
   const qty = cartItem?.qty || 0;
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/api/products/${id}`)
+    api
+      .get(`/products/${id}`)
       .then((res) => setProduct(res.data))
       .finally(() => setLoading(false));
   }, [id]);

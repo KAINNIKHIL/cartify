@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import dayjs from "dayjs";
 import Navbar from "../components/Navbar";
+import api from "../services/axios"
 
 const OrderDetail = () => {
   const { token } = useAuth();
@@ -17,24 +18,23 @@ const OrderDetail = () => {
   const statusSteps = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED"];
 
   useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/orders/${id}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Failed to fetch order");
-        setOrder(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchOrder = async () => {
+    try {
+      const res = await api.get(`/orders/${id}`);
+      setOrder(res.data);
+    } catch (err) {
+      console.error(
+        "Failed to fetch order:",
+        err.response?.data || err.message
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    if (token) fetchOrder();
-  }, [id, token]);
+  fetchOrder();
+}, [id]);
+
 
   const handleCancel = async () => {
     try {

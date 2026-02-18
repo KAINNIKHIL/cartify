@@ -24,35 +24,39 @@ const Checkout = () => {
   const isCartEmpty = cartItems.length === 0;
 
   // Fetch last saved address
-  useEffect(() => {
-    const fetchLastAddress = async () => {
-      if (!token) return;
-      try {
-        setFetchingAddress(true);
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/addresses`, {
-          headers: { Authorization: `Bearer ${token}` },
+useEffect(() => {
+  const fetchLastAddress = async () => {
+    if (!token) return;
+
+    try {
+      setFetchingAddress(true);
+
+      const { data: addresses } = await api.get("/addresses");
+
+      if (addresses?.length > 0) {
+        const last = addresses[addresses.length - 1];
+
+        setAddress({
+          phone: last.phone,
+          address: last.fullAddress,
+          city: last.city,
+          state: last.state,
+          pincode: last.pincode,
         });
-        const addresses = await res.json();
-
-        if (addresses.length > 0) {
-          const last = addresses[addresses.length - 1];
-          setAddress({
-            phone: last.phone,
-            address: last.fullAddress,
-            city: last.city,
-            state: last.state,
-            pincode: last.pincode,
-          });
-        }
-      } catch (err) {
-        console.error("Fetch last address error:", err);
-      } finally {
-        setFetchingAddress(false);
       }
-    };
+    } catch (err) {
+      console.error(
+        "Fetch last address error:",
+        err.response?.data || err.message
+      );
+    } finally {
+      setFetchingAddress(false);
+    }
+  };
 
-    fetchLastAddress();
-  }, [token]);
+  fetchLastAddress();
+}, [token]);
+
 
   const handleChange = (e) => {
     setAddress({ ...address, [e.target.name]: e.target.value });

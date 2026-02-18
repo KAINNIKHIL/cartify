@@ -1,59 +1,53 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+//import { useAuth } from "../hooks/useAuth";
 import { useCart } from "../hooks/useCart";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import api from "../services/axios"
+import { useSearchParams } from "react-router-dom";
+
 
 const Success = () => {
-  const { token } = useAuth();
+  //const { token } = useAuth();
   const { setCartItems } = useCart();
   const navigate = useNavigate();
 
   const [status, setStatus] = useState("verifying");
   const [orderId, setOrderId] = useState(null);
 
-  useEffect(() => {
-    const sessionId = new URLSearchParams(window.location.search).get("session_id");
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get("session_id");
 
-    const verifyPayment = async () => {
-      if (!sessionId) {
-        setStatus("failed");
-        return;
-      }
 
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/payment/verify-session`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ sessionId }),
-          }
-        );
+ useEffect(() => {
+  const verifyPayment = async () => {
+    if (!sessionId) {
+      setStatus("failed");
+      return;
+    }
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
+    try {
+      // 1️⃣ Verify Stripe session
+      const { data } = await api.post("/payment/verify-session", {
+        sessionId,
+      });
 
-        setOrderId(data.order?.id || null);
+      setOrderId(data.order?.id || null);
 
-        await fetch(`${import.meta.env.VITE_API_URL}/cart/clear`, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      // 2️⃣ Clear cart
+      await api.delete("/cart/clear");
 
-        setCartItems([]);
-        setStatus("success");
-      } catch (err) {
-        console.error(err);
-        setStatus("failed");
-      }
-    };
+      setCartItems([]);
+      setStatus("success");
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      setStatus("failed");
+    }
+  };
 
-    verifyPayment();
-  }, [token, setCartItems]);
+  verifyPayment();
+}, [sessionId, setCartItems]);
+
 
   const renderContent = () => {
     if (status === "verifying") {

@@ -1,41 +1,34 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { useAuth } from "../hooks/useAuth";
+//import { useAuth } from "../hooks/useAuth";
+import api from "../services/axios"
 
 const CODSuccess = () => {
-  const { token } = useAuth();
+  //const { token } = useAuth();
   const { orderId } = useParams();
   const navigate = useNavigate();
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+useEffect(() => {
+  const fetchOrder = async () => {
+    try {
+      const { data } = await api.get(`/orders/${orderId}`);
+      setOrder(data);
+    } catch (err) {
+      console.error("Failed to fetch order:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Failed to fetch order");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/orders/${orderId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+  if (orderId) fetchOrder();
+}, [orderId]);
 
-        if (!res.ok) throw new Error("Failed to fetch order");
-
-        const data = await res.json();
-        setOrder(data);
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (orderId && token) fetchOrder();
-  }, [orderId, token]);
 
   if (loading)
     return (

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "../services/axios"
 
 const ReviewForm = ({ productId, existingReview, onSuccess }) => {
   const { token, isAuthenticated } = useAuth();
@@ -16,29 +17,29 @@ const ReviewForm = ({ productId, existingReview, onSuccess }) => {
     if (!comment.trim()) return;
 
     try {
-      setLoading(true);
+  setLoading(true);
 
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/reviews/${productId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ rating, comment }),
-        }
-      );
-
-      const newReview = await res.json();
-      onSuccess(newReview);
-
-      setComment("");
-      setRating(5);
-    } finally {
-      setLoading(false);
+  const { data } = await api.post(
+    `/reviews/${productId}`,
+    {
+      rating,
+      comment,
     }
-  };
+  );
+
+  onSuccess(data);
+
+  setComment("");
+  setRating(5);
+
+} catch (err) {
+  console.error(
+    err.response?.data || err.message
+  );
+} finally {
+  setLoading(false);
+}
+  }
 
   if (!isAuthenticated) {
     return (

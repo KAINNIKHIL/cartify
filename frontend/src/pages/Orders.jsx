@@ -1,36 +1,35 @@
 // pages/Orders.jsx
 import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
-import { useAuth } from "../hooks/useAuth";
+//import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import api from "../services/axios"
 
 const Orders = () => {
-  const { token } = useAuth();
+  //const { token } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/orders/my-orders`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        const data = await res.json();
-        setOrders(data || []);
-      } catch (err) {
-        console.error("Failed to fetch orders:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const fetchOrders = async () => {
+    try {
+      const { data } = await api.get("/orders/my-orders");
+      setOrders(data ?? []);
+    } catch (err) {
+      console.error(
+        "Failed to fetch orders:",
+        err.response?.data || err.message
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    if (token) fetchOrders();
-  }, [token]);
+  fetchOrders();
+}, []);
+;
 
   const getStatusClasses = (status) => {
     switch (status) {
