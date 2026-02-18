@@ -1,6 +1,6 @@
 # 🛍️ ShopEase – Production-Ready Full Stack E-Commerce Platform
 
-Shopeease is a scalable full-stack e-commerce application designed to simulate a real-world online shopping system.
+ShopEase is a scalable full-stack e-commerce application designed to simulate a real-world online shopping system.
 It demonstrates secure authentication, structured database design, optimized API architecture, payment workflow, and production deployment practices.
 
 Built as a portfolio-level project to reflect industry standards.
