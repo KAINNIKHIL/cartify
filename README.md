@@ -197,15 +197,15 @@ npx prisma db push
 
 ## Home Page
 
-![Home](../../screenshots/home.png)
+![Home](./screenshots/home.png)
 
 ## Product Page
 
-![Product](../../screenshots/product.png)
+![Product](./screenshots/product.png)
 
 ## Cart
 
-![Cart](../../screenshots/cart.png)
+![Cart](./screenshots/cart.png)
 
 ### ⚙️ Local Development Setup
 
