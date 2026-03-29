@@ -128,9 +128,12 @@ const SearchResults = () => {
                       <p className="text-[var(--text-secondary)] line-through text-sm">
                         ₹{Math.round(product.price * 1.3)}
                       </p>
-                      <p className="text-green-600 text-sm font-medium">
-                        30% off
-                      </p>
+                      <span 
+  className="hidden min-[401px]:block text-sm font-medium"
+  style={{ color: "var(--primary)" }}
+>
+  30% off
+</span>
                     </div>
 
                     <button

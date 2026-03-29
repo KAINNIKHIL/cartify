@@ -82,9 +82,10 @@ const ProductCard = ({ product }) => {
           <p className="text-sm line-through" style={{ color: "var(--text-secondary)" }}>
             ₹{originalPrice}
           </p>
-          <span className="text-sm font-medium" style={{ color: "var(--primary)" }}>
-            {discountPercent}% off
-          </span>
+          <span className="hidden min-[401px]:inline text-sm font-medium"
+      style={{ color: "var(--primary)" }}>
+  {discountPercent}% off
+</span>
         </div>
 
         {/* Desktop View Button */}

@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// 1️⃣ Create Checkout Session
+//  Create Checkout Session
 export const createCheckoutSession = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -60,7 +60,7 @@ export const createCheckoutSession = async (req, res) => {
   }
 };
 
-// 2️⃣ Verify Payment & Create Order
+//  Verify Payment & Create Order
 export const verifySession = async (req, res) => {
   try {
     const { sessionId } = req.body;
@@ -72,7 +72,7 @@ export const verifySession = async (req, res) => {
       return res.status(400).json({ success: false, message: "Payment not completed" });
     }
 
-    // 🛑 Prevent duplicate order creation
+    //  Prevent duplicate order creation
     const existingOrder = await prisma.order.findFirst({
       where: { stripeSessionId: sessionId },
     });
@@ -84,7 +84,7 @@ export const verifySession = async (req, res) => {
     const userId = session.metadata.userId;
     const addressId = session.metadata.addressId;
 
-    // ✅ Safely parse items, fallback to empty array if metadata missing
+    //  Safely parse items, fallback to empty array if metadata missing
     let items = [];
     if (session.metadata.items) {
       try {
@@ -96,7 +96,7 @@ export const verifySession = async (req, res) => {
       return res.status(400).json({ error: "No items found in session metadata" });
     }
 
-    // 💰 Calculate total securely
+    //  Calculate total securely
     const totalAmount = items.reduce(
       (sum, item) => sum + item.price * item.qty,
       0

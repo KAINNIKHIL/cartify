@@ -116,7 +116,7 @@ export const updateOrderStatus = async (req, res) => {
   }
 };
 
-// 3️⃣ Create COD Order
+//  Create COD Order
 export const createCODOrder = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -148,7 +148,7 @@ export const createCODOrder = async (req, res) => {
 
     res.json({ success: true, order: newOrder });
   } catch (err) {
-    console.error("COD order error:", err);
+    //console.error("COD order error:", err);
     res.status(500).json({ error: "Failed to create COD order" });
   }
 };
@@ -182,7 +182,7 @@ export const cancelOrder = async (req, res) => {
 
     res.json({ success: true, order: updatedOrder });
   } catch (err) {
-    console.error("Cancel order error:", err);
+    //console.error("Cancel order error:", err);
     res.status(500).json({ message: "Failed to cancel order" });
   }
 };

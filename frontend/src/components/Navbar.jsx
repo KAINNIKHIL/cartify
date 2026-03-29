@@ -24,7 +24,7 @@ const Navbar = () => {
     setAccountOpen(false);
   };
 
-  // 🔍 Live Search
+  //  Live Search
   useEffect(() => {
     if (!searchQuery.trim()) {
       setResults([]);
@@ -46,7 +46,7 @@ const Navbar = () => {
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
 
-  // 🧠 Outside Click Close
+  //  Outside Click Close
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -176,7 +176,7 @@ const Navbar = () => {
                   className="flex items-center gap-1 text-sm font-medium"
                 >
                   <User size={18} />
-                  Account
+                  <span className="hidden sm:inline">Account</span>
                 </button>
 
                 {accountOpen && (
@@ -206,7 +206,7 @@ const Navbar = () => {
             ) : (
               <Link to="/login" className="flex items-center gap-1 text-sm font-medium">
                 <User size={18} />
-                Login
+                <span className="hidden sm:inline">Account</span>
               </Link>
             )}
           </div>

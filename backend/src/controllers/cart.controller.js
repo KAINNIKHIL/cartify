@@ -15,14 +15,14 @@ export const mergeCart = async (req, res) => {
 };
 
 export const myCart = async (req, res) => {
-    //console.log("USER FROM AUTH 👉", req.user);
+    //console.log("USER FROM AUTH ", req.user);
   const cart = await CartService.getOrCreateCart(req.user.id);
   res.json(cart);
 };
 
 export const clearCart = async (req, res) => {
   try {
-    // 1. Find user's cart
+    //  Find user's cart
     const userCart = await prisma.cart.findUnique({
       where: { userId: req.user.id }, // unique relation
       include: { items: true },
@@ -32,21 +32,21 @@ export const clearCart = async (req, res) => {
       return res.status(200).json({ message: "Cart is already empty" });
     }
 
-    // 2. Delete all items in that cart
+    //  Delete all items in that cart
     await prisma.cartItem.deleteMany({
       where: { cartId: userCart.id },
     });
 
     res.status(200).json({ message: "Cart cleared successfully" });
   } catch (err) {
-    console.error("Clear cart error:", err);
+    //console.error("Clear cart error:", err);
     res.status(500).json({ message: "Failed to clear cart" });
   }
 };
 export const removeCartItem = async (req, res) => {
   const { cartItemId } = req.params;
   const userId = req.user.id;
-  console.log("AUTH USER:", req.user.id);
+  //console.log("AUTH USER:", req.user.id);
 
   try {
     await CartService.removeItem(userId, cartItemId);
@@ -56,16 +56,16 @@ export const removeCartItem = async (req, res) => {
       return res.status(403).json({ message: err.message });
     }
 
-    console.error(err);
+    //console.error(err);
     return res.status(500).json({ message: "Failed to remove item" });
   }
 };
 
 
 export const addToCart = async (req, res) => {
-  console.log("ADD TO CART HIT");
-  console.log("USER:", req.user);
-  console.log("BODY:", req.body);
+  //console.log("ADD TO CART HIT");
+  //console.log("USER:", req.user);
+  //console.log("BODY:", req.body);
 
   const userId = req.user?.id;
   const { productId, qty = 1 } = req.body;
@@ -83,7 +83,7 @@ export const addToCart = async (req, res) => {
       create: { userId },
     });
 
-    console.log("CART:", cart);
+    //console.log("CART:", cart);
 
      const product = await prisma.product.findUnique({
       where: { id: productId },
@@ -111,11 +111,11 @@ export const addToCart = async (req, res) => {
       },
     });
 
-    console.log("CART ITEM:", item);
+    //console.log("CART ITEM:", item);
 
      res.json({ success: true, cartItem: item });
   } catch (err) {
-    console.error("ADD CART ERROR:", err);
+    //console.error("ADD CART ERROR:", err);
     res.status(500).json({ message: "Add to cart failed" });
   }
 };
@@ -134,7 +134,7 @@ export const updateCartItem = async (req, res) => {
     
     res.json({ success: true, cartItem: updatedItem });
   } catch (err) {
-    console.error("Update cart item error:", err);
+    //console.error("Update cart item error:", err);
     if (err.message === "Item not found or unauthorized") {
       return res.status(403).json({ message: err.message });
     }

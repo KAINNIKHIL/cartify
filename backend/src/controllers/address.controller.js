@@ -26,7 +26,7 @@ export const createAddress = async (req, res) => {
 
     res.status(201).json(newAddress);
   } catch (err) {
-    console.error("Create address error:", err);
+    //console.error("Create address error:", err);
     res.status(500).json({ message: "Failed to create address" });
   }
 };
@@ -39,7 +39,7 @@ export const getAddresses = async (req, res) => {
     });
     res.json(addresses);
   } catch (err) {
-    console.error("Get addresses error:", err);
+    //console.error("Get addresses error:", err);
     res.status(500).json({ message: "Failed to fetch addresses" });
   }
 };

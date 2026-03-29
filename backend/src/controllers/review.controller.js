@@ -26,7 +26,7 @@ export const upsertReview = async (req, res) => {
 
     res.json({ ...review, userId: review.userId });
   } catch (error) {
-    console.error(error);
+    //console.error(error);
     res.status(500).json({ error: "Failed to submit review" });
   }
 };
@@ -52,7 +52,7 @@ export const getProductReviews = async (req, res) => {
       total: reviews.length,
     });
   } catch (error) {
-    console.error(error);
+    //console.error(error);
     res.status(500).json({ error: "Failed to fetch reviews" });
   }
 };
